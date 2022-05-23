@@ -1,0 +1,4 @@
+pybadges
+fastapi
+uvicorn
+requests_html
