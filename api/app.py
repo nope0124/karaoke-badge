@@ -5,7 +5,55 @@ from typing import Optional
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from requests_html import AsyncHTMLSession
+from requests_html import HTML
+from pyppeteer import launch
 
+
+import zipfile
+import os, subprocess
+import urllib.error
+import urllib.request
+
+file_url = "https://github.com/adieuadieu/serverless-chrome/releases/download/v1.0.0-55/stable-headless-chromium-amazonlinux-2017-03.zip"
+
+
+import tempfile
+
+prefix = tempfile.gettempdir()
+
+save_path = prefix+"/download.zip"
+
+with urllib.request.urlopen(file_url) as download_file:
+    data = download_file.read()
+    with open(save_path, mode='wb') as save_file:
+        save_file.write(data)
+    with zipfile.ZipFile(prefix+"/download.zip") as obj_zip:
+        # 指定ディレクトリにすべてを保存する
+        obj_zip.extractall(prefix)
+        subprocess.run(["chmod", "+x", prefix+"/headless-chromium"], check=True)
+
+# with urllib.request.urlopen(file_url) as download_file:
+#     data = download_file.read()
+#     with open(save_path, mode='wb') as save_file:
+#         save_file.write(data)
+#     with zipfile.ZipFile(prefix+"/download.zip") as obj_zip:
+#         # 指定ディレクトリにすべてを保存する
+#         obj_zip.extractall(prefix)
+#         subprocess.run(["chmod", "+x", prefix+"/headless-chromium"], check=True)
+
+# print(subprocess.call('ls'))
+
+
+
+
+
+# s3_bucket = boto3.resource("s3").Bucket("YOUR_BUCKET")
+# zip_file_path = "/tmp/chrome.zip"
+# if not os.path.exists(zip_file_path):
+#     # s3_bucket.download_file("S3_PATH", zip_file_path)
+#     with zipfile.ZipFile(zip_file_path, "r") as zip_ref:
+#         zip_ref.extractall("/tmp")
+#         subprocess.run(["chmod", "+x", "/tmp/headless-chromium"], check=True)
 app = FastAPI()
 
 
@@ -20,14 +68,48 @@ website_text = {
 }
 
 async def get_clubdam_dx_point(user):
-    asession = AsyncHTMLSession()
+    # asession = AsyncHTMLSession()
     url = f"https://clubdam.info/user/{user}/song"
+
+
+
+    
     # セッション開始
-    r = await asession.get(url)
-    await r.html.arender()
+
+    # os.chdir("/tmp")
+    # print(subprocess.call('ls'))
+    # return ["100", "#FFFF00"]
+    browser = await launch(
+        userDataDir=prefix,
+        executablePath=prefix+"/headless-chromium",
+        headless=False,
+        timeout=30000
+    )
+
+    # return ["100", "#FFFF00"]
+
+    page = await browser.newPage()
+    # await page.setViewport({"width": 1280, "height": 960})
+
+    await asyncio.wait([
+        page.goto(url),
+        page.waitForNavigation(),
+    ])
+    content = await page.content()
+    html = HTML(html=content)
+
+    await browser.close()
+
+
+
+
+
+    # r = await asession.get(url)
+    # await r.html.arender(wait=3, sleep=3, keep_page=True)
+    # return ["100", "#FFFF00"]
 
     # スクレイピング
-    point = float(r.html.find("#data_1")[0].find(".table_point", first=True).text)
+    point = float(html.find("#data_1")[0].find(".table_point", first=True).text)
 
     y = point
     if (y < 80.000):
@@ -345,7 +427,7 @@ async def get_badge(handle, website):
     x = await asyncio.gather(
         get_info(handle, website)
     )
-    x = [["100", "#FFFF00"]]
+    # x = [["100", "#FFFF00"]]
     rating, color = str(x[0][0]), str(x[0][1])
     text = website_text[website.lower()]
     badge = pybadges.badge(left_text=text, right_text=rating, right_color=color)

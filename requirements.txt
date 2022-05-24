@@ -2,3 +2,4 @@ pybadges
 fastapi
 uvicorn
 requests_html
+boto3
