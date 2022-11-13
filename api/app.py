@@ -545,22 +545,29 @@ website_text = {
 def get_clubdam_dx_g_ranking(user):
     session = HTMLSession()
     base_url = "https://dx-g.clubdam.info/history/load_content_div/{}/scoringDateTime/desc".format(user)
+    # セッション開始
     idx = 1
     highscore = {}
+    li_list = []
     while True:
         url = "{}/{}".format(base_url, idx)
         r = session.get(url)
         if r.html.text == "歌唱履歴がありません": break
-        
+        # break
         point_index_text = r.html.find("tbody")
-        for i in point_index_text:
-            str_data = i.attrs["data-object_data"]
-            dict_data = json.loads(str_data)
-            request_no = dict_data["requestNo"]
-            raw_point = float(dict_data["rawPoint"])
-            if highscore.get(request_no) == None: highscore[request_no] = float(0)
-            highscore[request_no] = max(highscore[request_no], raw_point)
+        # print(point_index_text)
+        li_list.extend(point_index_text)
+        
         idx += 1
+    for i in li_list:
+        str_data = i.attrs["data-object_data"]
+        dict_data = json.loads(str_data)
+        request_no = dict_data["requestNo"]
+        raw_point = float(dict_data["rawPoint"])
+        if highscore.get(request_no) == None: highscore[request_no] = float(0)
+        highscore[request_no] = max(highscore[request_no], raw_point)
+
+
     # print("Success!!")
     y = 0
     for key, value in highscore.items():
