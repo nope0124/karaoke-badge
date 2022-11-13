@@ -445,13 +445,13 @@
 
 from typing import Optional
 import pybadges
-import asyncio
 from typing import Optional
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
-from requests_html import AsyncHTMLSession
+from requests_html import HTMLSession
 from requests_html import HTML
 from pyppeteer import launch
+import json
 
 
 
@@ -489,35 +489,105 @@ website_text = {
 
 
 
-async def get_clubdam_dx_ranking(user):
-    asession = AsyncHTMLSession()
-    url = "https://clubdam.info/repranking"
+# def get_clubdam_dx_ranking(user):
+#     session = HTMLSession()
+#     url = "https://clubdam.info/repranking"
+#     # セッション開始
+#     r = session.get(url)
+
+#     # スクレイピング
+#     point_index_text = r.html.find("tbody", first=True).find("tr")
+#     point_times_text = r.html.find("tbody", first=True).find("tr")
+    
+#     point_index = []
+#     point_times = []
+#     for point in point_index_text:
+#         point_index.append(point.find("td")[1].text)
+#     for point in point_times_text:
+#         point_times.append(point.find("td")[2].text)
+
+
+#     idx = -1
+#     if user in point_index:
+#         idx = point_index.index(user)
+    
+#     y = "***"
+#     if idx != -1:
+#         y = point_times[idx]
+    
+#     if (y == "***"):
+#         col = "#FFFFFF"
+#     elif (0 == int(y)):
+#         col = "#FFFFFF"
+#     elif (1 <= int(y) < 4):
+#         col = "#FFCCDC"
+#     elif (4 <= int(y) < 10):
+#         col = "#FFBBFF"
+#     elif (10 <= int(y) < 50):
+#         col = "#CCCCFF"
+#     elif (50 <= int(y) < 100):
+#         col = "#ABFFFF"
+#     elif (100 <= int(y) < 500):
+#         col = "#CCFFCC"
+#     elif (500 <= int(y) < 1000):
+#         # col = "#FFFFAA"
+#         col = "#FFF550"
+#     elif (1000 <= int(y)):
+#         col = "#FFCC11"
+#     else:
+#         col = "#FFFFFF"
+#     return [y, col]
+
+
+
+
+
+def get_clubdam_dx_g_ranking(user):
+    session = HTMLSession()
+    base_url = "https://dx-g.clubdam.info/history/load_content_div/{}/scoringDateTime/desc".format(user)
     # セッション開始
-    r = await asession.get(url)
+    idx = 1
+    highscore = {}
+    while True:
+        url = "{}/{}".format(base_url, idx)
+        r = session.get(url)
+        if r.html.text == "歌唱履歴がありません": break
+        
+        point_index_text = r.html.find("tbody")
+        for i in point_index_text:
+            str_data = i.attrs["data-object_data"]
+            dict_data = json.loads(str_data)
+            request_no = dict_data["requestNo"]
+            raw_point = float(dict_data["rawPoint"])
+            if highscore.get(request_no) == None: highscore[request_no] = float(0)
+            highscore[request_no] = max(highscore[request_no], raw_point)
+        idx += 1
+    # print("Success!!")
+    y = 0
+    for key, value in highscore.items():
+        if int(value) == 100:
+            y += 1
 
     # スクレイピング
-    point_index_text = r.html.find("tbody", first=True).find("tr")
-    point_times_text = r.html.find("tbody", first=True).find("tr")
+    # point_index_text = r.html.find("tbody", first=True).find("tr")
+    # point_times_text = r.html.find("tbody", first=True).find("tr")
     
-    point_index = []
-    point_times = []
-    for point in point_index_text:
-        point_index.append(point.find("td")[1].text)
-    for point in point_times_text:
-        point_times.append(point.find("td")[2].text)
+    # point_index = []
+    # point_times = []
+    # for point in point_index_text:
+    #     point_index.append(point.find("td")[1].text)
+    # for point in point_times_text:
+    #     point_times.append(point.find("td")[2].text)
 
 
-    idx = -1
-    if user in point_index:
-        idx = point_index.index(user)
+    # idx = -1
+    # if user in point_index:
+    #     idx = point_index.index(user)
     
-    y = "***"
-    if idx != -1:
-        y = point_times[idx]
+    # if idx != -1:
+    #     y = point_times[idx]
     
-    if (y == "***"):
-        col = "#FFFFFF"
-    elif (0 == int(y)):
+    if (0 == int(y)):
         col = "#FFFFFF"
     elif (1 <= int(y) < 4):
         col = "#FFCCDC"
@@ -536,142 +606,88 @@ async def get_clubdam_dx_ranking(user):
         col = "#FFCC11"
     else:
         col = "#FFFFFF"
+    # print([y, col])
     return [y, col]
 
 
 
 
+# def get_clubdam_dx_g_ranking_plus(user):
+#     session = HTMLSession()
+#     url = "https://dx-g.clubdam.info/history/load_content_div/nope0421/scoringDateTime/desc/1"
+#     # セッション開始
+#     r = session.get(url)
 
-async def get_clubdam_dx_g_ranking(user):
-    asession = AsyncHTMLSession()
-    url = "https://dx-g.clubdam.info/repranking/index/total"
-    # セッション開始
-    r = await asession.get(url)
-
-    # スクレイピング
-    point_index_text = r.html.find("tbody", first=True).find("tr")
-    point_times_text = r.html.find("tbody", first=True).find("tr")
+#     # スクレイピング
+#     point_index_text = r.html.find("tbody", first=True).find("tr")
+#     point_times_text = r.html.find("tbody", first=True).find("tr")
     
-    point_index = []
-    point_times = []
-    for point in point_index_text:
-        point_index.append(point.find("td")[1].text)
-    for point in point_times_text:
-        point_times.append(point.find("td")[2].text)
+#     point_index = []
+#     point_times = []
+#     for point in point_index_text:
+#         point_index.append(point.find("td")[1].text)
+#     for point in point_times_text:
+#         point_times.append(point.find("td")[2].text)
 
 
-    idx = -1
-    if user in point_index:
-        idx = point_index.index(user)
+#     idx = -1
+#     if user in point_index:
+#         idx = point_index.index(user)
     
-    y = "***"
-    if idx != -1:
-        y = point_times[idx]
+#     y = "***"
+#     if idx != -1:
+#         y = point_times[idx]
     
-    if (y == "***"):
-        col = "#FFFFFF"
-    elif (0 == int(y)):
-        col = "#FFFFFF"
-    elif (1 <= int(y) < 4):
-        col = "#FFCCDC"
-    elif (4 <= int(y) < 10):
-        col = "#FFBBFF"
-    elif (10 <= int(y) < 50):
-        col = "#CCCCFF"
-    elif (50 <= int(y) < 100):
-        col = "#ABFFFF"
-    elif (100 <= int(y) < 500):
-        col = "#CCFFCC"
-    elif (500 <= int(y) < 1000):
-        # col = "#FFFFAA"
-        col = "#FFF550"
-    elif (1000 <= int(y)):
-        col = "#FFCC11"
-    else:
-        col = "#FFFFFF"
-    return [y, col]
-
-
-
-
-async def get_clubdam_dx_g_ranking_plus(user):
-    asession = AsyncHTMLSession()
-    url = "https://dx-g.clubdam.info/repranking"
-    # セッション開始
-    r = await asession.get(url)
-
-    # スクレイピング
-    point_index_text = r.html.find("tbody", first=True).find("tr")
-    point_times_text = r.html.find("tbody", first=True).find("tr")
-    
-    point_index = []
-    point_times = []
-    for point in point_index_text:
-        point_index.append(point.find("td")[1].text)
-    for point in point_times_text:
-        point_times.append(point.find("td")[2].text)
-
-
-    idx = -1
-    if user in point_index:
-        idx = point_index.index(user)
-    
-    y = "***"
-    if idx != -1:
-        y = point_times[idx]
-    
-    if (y == "***"):
-        col = "#FFFFFF"
-    elif (0 == int(y)):
-        col = "#FFFFFF"
-    elif (1 <= int(y) < 4):
-        col = "#FFCCDC"
-    elif (4 <= int(y) < 10):
-        col = "#FFBBFF"
-    elif (10 <= int(y) < 50):
-        col = "#CCCCFF"
-    elif (50 <= int(y) < 100):
-        col = "#ABFFFF"
-    elif (100 <= int(y) < 500):
-        col = "#CCFFCC"
-    elif (500 <= int(y) < 1000):
-        # col = "#FFFFAA"
-        col = "#FFF550"
-    elif (1000 <= int(y)):
-        col = "#FFCC11"
-    else:
-        col = "#FFFFFF"
-    return [y, col]
+#     if (y == "***"):
+#         col = "#FFFFFF"
+#     elif (0 == int(y)):
+#         col = "#FFFFFF"
+#     elif (1 <= int(y) < 4):
+#         col = "#FFCCDC"
+#     elif (4 <= int(y) < 10):
+#         col = "#FFBBFF"
+#     elif (10 <= int(y) < 50):
+#         col = "#CCCCFF"
+#     elif (50 <= int(y) < 100):
+#         col = "#ABFFFF"
+#     elif (100 <= int(y) < 500):
+#         col = "#CCFFCC"
+#     elif (500 <= int(y) < 1000):
+#         # col = "#FFFFAA"
+#         col = "#FFF550"
+#     elif (1000 <= int(y)):
+#         col = "#FFCC11"
+#     else:
+#         col = "#FFFFFF"
+#     return [y, col]
 
 
 
 
 
-async def get_info(handle, website):
+def get_info(handle, website):
     website = website.lower()
-    if website == "clubdam-dx-ranking":
-        return await get_clubdam_dx_ranking(handle)
-    elif website == "clubdam-dx-g-ranking":
-        return await get_clubdam_dx_g_ranking(handle)
-    elif website == "clubdam-dx-g-ranking-plus":
-        return await get_clubdam_dx_g_ranking_plus(handle)
+    # if website == "clubdam-dx-ranking":
+    #     return get_clubdam_dx_ranking(handle)
+    if website == "clubdam-dx-g-ranking":
+        return get_clubdam_dx_g_ranking(handle)
+    # elif website == "clubdam-dx-g-ranking-plus":
+    #     return get_clubdam_dx_g_ranking_plus(handle)
     else:
         raise ValueError("wrong platform website name")
-    
 
 
 
 
 @app.get("/{website}/{handle}")
-async def get_badge(handle, website):
+def get_badge(handle, website):
 
-    loop = asyncio.get_event_loop()
+    # loop = asyncio.get_event_loop()
     # asyncio.set_event_loop(loop)
     # x = loop.run_until_complete(get_info(handle, website))
     
-    x = await asyncio.gather(
-        get_info(handle, website)
-    )
+    x = get_info(handle, website)
+    
     # x = [["100", "#FFFF00"]]
     rating, color = str(x[0][0]), str(x[0][1])
     text = website_text[website.lower()]
