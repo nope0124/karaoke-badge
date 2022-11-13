@@ -543,6 +543,9 @@ website_text = {
 
 
 def get_clubdam_dx_g_ranking(user):
+    y = 1
+    col = "#FFFFFF"
+    return [y, col]
     session = HTMLSession()
     base_url = "https://dx-g.clubdam.info/history/load_content_div/{}/scoringDateTime/desc".format(user)
     idx = 1
