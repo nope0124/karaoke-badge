@@ -561,8 +561,8 @@ def get_clubdam_dx_g_ranking(user):
         li_list.extend(point_index_text)
         
         idx += 1
-    # for i in li_list:
-    #     str_data = i.attrs["data-object_data"]
+    for i in li_list:
+        str_data = i.attrs["data-object_data"]
     #     dict_data = json.loads(str_data)
     #     request_no = dict_data["requestNo"]
     #     raw_point = float(dict_data["rawPoint"])
