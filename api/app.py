@@ -551,7 +551,6 @@ def get_clubdam_dx_g_ranking(user):
         url = "{}/{}".format(base_url, idx)
         r = session.get(url)
         if r.html.text == "歌唱履歴がありません": break
-        break
         
         point_index_text = r.html.find("tbody")
         for i in point_index_text:
