@@ -556,7 +556,7 @@ def get_clubdam_dx_g_ranking(user):
         # break
         
         point_index_text = r.html.find("tbody")
-        # if idx == 2: break
+        if idx == 2: break
         # print(point_index_text)
         li_list.extend(point_index_text)
         
