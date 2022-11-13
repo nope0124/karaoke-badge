@@ -489,54 +489,54 @@ website_text = {
 
 
 
-# def get_clubdam_dx_ranking(user):
-#     session = HTMLSession()
-#     url = "https://clubdam.info/repranking"
-#     # セッション開始
-#     r = session.get(url)
+def get_clubdam_dx_ranking(user):
+    session = HTMLSession()
+    url = "https://clubdam.info/repranking"
+    # セッション開始
+    r = session.get(url)
 
-#     # スクレイピング
-#     point_index_text = r.html.find("tbody", first=True).find("tr")
-#     point_times_text = r.html.find("tbody", first=True).find("tr")
+    # スクレイピング
+    point_index_text = r.html.find("tbody", first=True).find("tr")
+    point_times_text = r.html.find("tbody", first=True).find("tr")
     
-#     point_index = []
-#     point_times = []
-#     for point in point_index_text:
-#         point_index.append(point.find("td")[1].text)
-#     for point in point_times_text:
-#         point_times.append(point.find("td")[2].text)
+    point_index = []
+    point_times = []
+    for point in point_index_text:
+        point_index.append(point.find("td")[1].text)
+    for point in point_times_text:
+        point_times.append(point.find("td")[2].text)
 
 
-#     idx = -1
-#     if user in point_index:
-#         idx = point_index.index(user)
+    idx = -1
+    if user in point_index:
+        idx = point_index.index(user)
     
-#     y = "***"
-#     if idx != -1:
-#         y = point_times[idx]
+    y = "***"
+    if idx != -1:
+        y = point_times[idx]
     
-#     if (y == "***"):
-#         col = "#FFFFFF"
-#     elif (0 == int(y)):
-#         col = "#FFFFFF"
-#     elif (1 <= int(y) < 4):
-#         col = "#FFCCDC"
-#     elif (4 <= int(y) < 10):
-#         col = "#FFBBFF"
-#     elif (10 <= int(y) < 50):
-#         col = "#CCCCFF"
-#     elif (50 <= int(y) < 100):
-#         col = "#ABFFFF"
-#     elif (100 <= int(y) < 500):
-#         col = "#CCFFCC"
-#     elif (500 <= int(y) < 1000):
-#         # col = "#FFFFAA"
-#         col = "#FFF550"
-#     elif (1000 <= int(y)):
-#         col = "#FFCC11"
-#     else:
-#         col = "#FFFFFF"
-#     return [y, col]
+    if (y == "***"):
+        col = "#FFFFFF"
+    elif (0 == int(y)):
+        col = "#FFFFFF"
+    elif (1 <= int(y) < 4):
+        col = "#FFCCDC"
+    elif (4 <= int(y) < 10):
+        col = "#FFBBFF"
+    elif (10 <= int(y) < 50):
+        col = "#CCCCFF"
+    elif (50 <= int(y) < 100):
+        col = "#ABFFFF"
+    elif (100 <= int(y) < 500):
+        col = "#CCFFCC"
+    elif (500 <= int(y) < 1000):
+        # col = "#FFFFAA"
+        col = "#FFF550"
+    elif (1000 <= int(y)):
+        col = "#FFCC11"
+    else:
+        col = "#FFFFFF"
+    return [y, col]
 
 
 
@@ -612,54 +612,54 @@ def get_clubdam_dx_g_ranking(user):
 
 
 
-# def get_clubdam_dx_g_ranking_plus(user):
-#     session = HTMLSession()
-#     url = "https://dx-g.clubdam.info/history/load_content_div/nope0421/scoringDateTime/desc/1"
-#     # セッション開始
-#     r = session.get(url)
+def get_clubdam_dx_g_ranking_plus(user):
+    session = HTMLSession()
+    url = "https://dx-g.clubdam.info/history/load_content_div/nope0421/scoringDateTime/desc/1"
+    # セッション開始
+    r = session.get(url)
 
-#     # スクレイピング
-#     point_index_text = r.html.find("tbody", first=True).find("tr")
-#     point_times_text = r.html.find("tbody", first=True).find("tr")
+    # スクレイピング
+    point_index_text = r.html.find("tbody", first=True).find("tr")
+    point_times_text = r.html.find("tbody", first=True).find("tr")
     
-#     point_index = []
-#     point_times = []
-#     for point in point_index_text:
-#         point_index.append(point.find("td")[1].text)
-#     for point in point_times_text:
-#         point_times.append(point.find("td")[2].text)
+    point_index = []
+    point_times = []
+    for point in point_index_text:
+        point_index.append(point.find("td")[1].text)
+    for point in point_times_text:
+        point_times.append(point.find("td")[2].text)
 
 
-#     idx = -1
-#     if user in point_index:
-#         idx = point_index.index(user)
+    idx = -1
+    if user in point_index:
+        idx = point_index.index(user)
     
-#     y = "***"
-#     if idx != -1:
-#         y = point_times[idx]
+    y = "***"
+    if idx != -1:
+        y = point_times[idx]
     
-#     if (y == "***"):
-#         col = "#FFFFFF"
-#     elif (0 == int(y)):
-#         col = "#FFFFFF"
-#     elif (1 <= int(y) < 4):
-#         col = "#FFCCDC"
-#     elif (4 <= int(y) < 10):
-#         col = "#FFBBFF"
-#     elif (10 <= int(y) < 50):
-#         col = "#CCCCFF"
-#     elif (50 <= int(y) < 100):
-#         col = "#ABFFFF"
-#     elif (100 <= int(y) < 500):
-#         col = "#CCFFCC"
-#     elif (500 <= int(y) < 1000):
-#         # col = "#FFFFAA"
-#         col = "#FFF550"
-#     elif (1000 <= int(y)):
-#         col = "#FFCC11"
-#     else:
-#         col = "#FFFFFF"
-#     return [y, col]
+    if (y == "***"):
+        col = "#FFFFFF"
+    elif (0 == int(y)):
+        col = "#FFFFFF"
+    elif (1 <= int(y) < 4):
+        col = "#FFCCDC"
+    elif (4 <= int(y) < 10):
+        col = "#FFBBFF"
+    elif (10 <= int(y) < 50):
+        col = "#CCCCFF"
+    elif (50 <= int(y) < 100):
+        col = "#ABFFFF"
+    elif (100 <= int(y) < 500):
+        col = "#CCFFCC"
+    elif (500 <= int(y) < 1000):
+        # col = "#FFFFAA"
+        col = "#FFF550"
+    elif (1000 <= int(y)):
+        col = "#FFCC11"
+    else:
+        col = "#FFFFFF"
+    return [y, col]
 
 
 
