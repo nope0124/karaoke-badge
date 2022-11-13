@@ -556,18 +556,18 @@ def get_clubdam_dx_g_ranking(user):
         # break
         
         point_index_text = r.html.find("tbody")
-        if idx == 20: break
+        # if idx == 20: break
         # print(point_index_text)
         li_list.extend(point_index_text)
         
         idx += 1
-    for i in li_list:
-        str_data = i.attrs["data-object_data"]
-        dict_data = json.loads(str_data)
-        request_no = dict_data["requestNo"]
-        raw_point = float(dict_data["rawPoint"])
-        if highscore.get(request_no) == None: highscore[request_no] = float(0)
-        highscore[request_no] = max(highscore[request_no], raw_point)
+    # for i in li_list:
+    #     str_data = i.attrs["data-object_data"]
+    #     dict_data = json.loads(str_data)
+    #     request_no = dict_data["requestNo"]
+    #     raw_point = float(dict_data["rawPoint"])
+    #     if highscore.get(request_no) == None: highscore[request_no] = float(0)
+    #     highscore[request_no] = max(highscore[request_no], raw_point)
 
 
     # print("Success!!")
