@@ -688,8 +688,8 @@ def get_badge(handle, website):
     
     x = get_info(handle, website)
     
-    x = [["100", "#FFFF00"]]
-    rating, color = str(x[0][0]), str(x[0][1])
+    # x = [["100", "#FFFF00"]]
+    rating, color = str(x[0]), str(x[1])
     text = website_text[website.lower()]
     badge = pybadges.badge(left_text=text, right_text=rating, right_color=color)
     return HTMLResponse(content=badge, status_code=200, media_type='image/svg+xml')
