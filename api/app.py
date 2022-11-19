@@ -57,7 +57,7 @@ def get_clubdam_100points(user_name, scoring_model, including_bonus=True):
         if len(raw_song_data) == 0: break
         raw_song_data_list.extend(raw_song_data)
         page_index += 1
-        if page_index >= 30:
+        if page_index >= 5:
             break
     sf = time.time()
     print(sf-st)
