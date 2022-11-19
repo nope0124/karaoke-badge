@@ -5,6 +5,7 @@ from requests_html import HTMLSession
 from requests_html import HTML
 # from enum import Enum
 import json
+import time
 
 
 app = FastAPI()
@@ -47,14 +48,20 @@ def get_clubdam_100points(user_name, scoring_model, including_bonus=True):
     page_index = 1
     highscore_by_song = {}
     raw_song_data_list = []
-
+    st = time()
     while True:
         url = "{}/{}".format(base_url, page_index)
         req = HTMLSession().get(url)
+        print("requests")
         raw_song_data = req.html.find("tbody")
         if len(raw_song_data) == 0: break
         raw_song_data_list.extend(raw_song_data)
         page_index += 1
+        if page_index >= 30:
+            break
+    sf = time()
+    print(sf-st)
+
 
     for raw_song_data in raw_song_data_list:
         song_data = json.loads(raw_song_data.attrs["data-object_data"])
