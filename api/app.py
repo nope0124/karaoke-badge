@@ -48,7 +48,7 @@ def get_clubdam_100points(user_name, scoring_model, including_bonus=True):
     page_index = 1
     highscore_by_song = {}
     raw_song_data_list = []
-    st = time()
+    st = time.time()
     while True:
         url = "{}/{}".format(base_url, page_index)
         req = HTMLSession().get(url)
@@ -59,7 +59,7 @@ def get_clubdam_100points(user_name, scoring_model, including_bonus=True):
         page_index += 1
         if page_index >= 30:
             break
-    sf = time()
+    sf = time.time()
     print(sf-st)
 
 
