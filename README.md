@@ -1,15 +1,16 @@
 ## Note
-カラオケ精密採点の[100点曲数ランキング](https://clubdam.info/repranking)を基にバッジを作成します。元サイトの都合上、高確率で読み込まれません。
+[カラオケ精密検索](https://seimitsu-kensaku.herokuapp.com)に登録されている情報を基にバッジを作成します。
 
 ## Examples
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g-ranking-plus/nope124)
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-ranking/ganmolt)
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g-ranking-plus/ganmolt)
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-ranking/中の人)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver95)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver98)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver99)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRaw100)
 
 ## Usage
 ```
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-ranking/nope124)
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g-ranking/nope124)
-![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g-ranking-plus/nope124)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver95)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver98)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRawOver99)
+![Badge](https://karaoke-badge.vercel.app/clubdam-dx-g/nope0421/rawPoint/countRaw100)
 ```
