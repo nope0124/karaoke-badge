@@ -1,21 +1,19 @@
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import pybadges
-from requests_html import HTMLSession
-from requests_html import HTML
+import requests
+
 # from enum import Enum
 import json
-import time
 
 
 app = FastAPI()
 
 
-website_text = {
-    "clubdam-dx-100points": "DAM-DX-100Points",
-    "clubdam-dx-g-100points": "DAM-DX-G-100Points",
-    "clubdam-dx-g-100points-plus": "DAM-DX-G-100Points+",
-}
+# DX or DX_G or AI
+# charts or points
+# score
+# including bonus
 
 
 # """
@@ -27,85 +25,68 @@ website_text = {
 #     AI = 3
 
 
-def get_clubdam_100points(user_name, scoring_model, including_bonus=True):
-    """
-    100点曲数をスクレイピングする関数
+get_color = {
+    "countRaw100": "#FFCC11",
+    "countRawOver99": "#FFF550",
+    "countRawOver98": "#CCFFCC",
+    "countRawOver95": "#ABFFFF",
+    "countRawOver90": "#CCCCFF",
+    "countRawOver85": "#FFBBFF",
+    "countRawOver80": "#FFCCDC",
+    "count100": "#FFCC11",
+    "countOver99": "#FFF550",
+    "countOver98": "#CCFFCC",
+    "countOver95": "#ABFFFF",
+    "countOver90": "#CCCCFF",
+    "countOver85": "#FFBBFF",
+    "countOver80": "#FFCCDC",
+    "cntChart500": "#FFCC11",
+    "cntChart499": "#FFCC11",
+    "cntChart498": "#FFF550",
+    "cntChart497": "#CCFFCC",
+    "cntChart495": "#ABFFFF",
+    "cntChart490": "#CCCCFF",
+}
 
-    Args:
-        user_name (str): ユーザ名
-        scoring_model (ScoringModel): 採点機種
-        including_bonus (bool): ボーナス込みか否か
+website = {
+    "clubdam-dx-g": "DX-G",
+    "countRaw100": "100",
+    "countRawOver99": "99",
+    "countRawOver98": "98",
+    "countRawOver95": "95",
+    "countRawOver90": "90",
+    "countRawOver85": "85",
+    "countRawOver80": "80",
+    "count100": "100",
+    "countOver99": "99",
+    "countOver98": "98",
+    "countOver95": "95",
+    "countOver90": "90",
+    "countOver85": "85",
+    "countOver80": "80",
+    "cntChart500": "500",
+    "cntChart499": "499",
+    "cntChart498": "498",
+    "cntChart497": "497",
+    "cntChart495": "495",
+    "cntChart490": "490",
+    "rawPoint": "RawPoints",
+    "totalPoint": "Points",
+    "chartTotal": "Charts", 
+}
 
-    Returns:
-        [int, str]: Return [count, color]
+
+
+def get_info(scoring_model, user_name, evaluation, score_text):
     
-    """
-
-    if scoring_model == "DX":
-        base_url = "https://clubdam.info/history/load_content_div/{}/date/desc".format(user_name)
-    elif scoring_model == "DX_G":
-        base_url = "https://dx-g.clubdam.info/history/load_content_div/{}/scoringDateTime/desc".format(user_name)
-    page_index = 1
-    highscore_by_song = {}
-    raw_song_data_list = []
-    st = time.time()
-    while True:
-        url = "{}/{}".format(base_url, page_index)
-        req = HTMLSession().get(url)
-        print("requests")
-        raw_song_data = req.html.find("tbody")
-        if len(raw_song_data) == 0: break
-        raw_song_data_list.extend(raw_song_data)
-        page_index += 1
-        if page_index >= 5:
-            break
-    sf = time.time()
-    print(sf-st)
-
-
-    for raw_song_data in raw_song_data_list:
-        song_data = json.loads(raw_song_data.attrs["data-object_data"])
-        request_no = song_data["requestNo"]
-        song_points = float(song_data["totalPoint"]) if including_bonus else float(song_data["rawPoint"])
-        if highscore_by_song.get(request_no) == None: highscore_by_song[request_no] = 0.0
-        highscore_by_song[request_no] = max(highscore_by_song[request_no], song_points)
-
-    count = 0
-    for points in highscore_by_song.values():
-        if int(points) == 100:
-            count += 1
-    
-    if (0 == count):
-        color = "#FFFFFF"
-    elif (1 <= count < 4):
-        color = "#FFCCDC"
-    elif (4 <= count < 10):
-        color = "#FFBBFF"
-    elif (10 <= count < 50):
-        color = "#CCCCFF"
-    elif (50 <= count < 100):
-        color = "#ABFFFF"
-    elif (100 <= count < 500):
-        color = "#CCFFCC"
-    elif (500 <= count < 1000):
-        color = "#FFF550"
-    elif (1000 <= count):
-        color = "#FFCC11"
-    else:
-        color = "#FFFFFF"
-    return [count, color]
-
-
-def get_info(website, user_name):
-    website = website.lower()
-    if website == "clubdam-dx-100points":
-        return get_clubdam_100points(user_name, "DX")
-    elif website == "clubdam-dx-g-100points":
-        return get_clubdam_100points(user_name, "DX_G", True)
-    elif website == "clubdam-dx-g-100points-plus":
-        return get_clubdam_100points(user_name, "DX_G", False)
-    else:
-        raise ValueError("wrong platform website name")
+    if scoring_model == "clubdam-dx-g":
+        url = "https://seimitsu-kensaku.herokuapp.com/api/v1/{}/counts".format(user_name)
+    req_get = requests.get(url)
+    if req_get.status_code != 200:
+        return "Wrong platform website name"
+    score = req_get.json()["result"][evaluation][score_text]
+    color = get_color[score_text]
+    return [score, color]
 
 
 @app.get("/")
@@ -113,10 +94,10 @@ def index():
     return "This API is working."
 
 
-@app.get("/{website}/{user_name}")
-def get_badge(website, user_name):
-    info = get_info(website, user_name)
-    rating, color = str(info[0]), str(info[1])
-    text = website_text[website.lower()]
-    badge = pybadges.badge(left_text=text, right_text=rating, right_color=color)
+@app.get("/{scoring_model}/{user_name}/{evaluation}/{score_text}")
+def get_badge(scoring_model, user_name, evaluation, score_text):
+    info = get_info(scoring_model, user_name, evaluation, score_text)
+    score, color = str(info[0]), str(info[1])
+    text = "{}-{}{}".format(website[scoring_model], website[score_text], website[evaluation])
+    badge = pybadges.badge(left_text=text, right_text=score, right_color=color)
     return HTMLResponse(content=badge, status_code=200, media_type='image/svg+xml')
