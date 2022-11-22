@@ -86,6 +86,8 @@ def get_info(scoring_model, user_name, evaluation, score_text):
         return "Wrong platform website name"
     score = req_get.json()["result"][evaluation][score_text]
     color = get_color[score_text]
+    if score < 1:
+        return "A badge with a score of 0 cannot be displayed"
     return [score, color]
 
 
