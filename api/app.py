@@ -99,6 +99,8 @@ def index():
 @app.get("/{scoring_model}/{user_name}/{evaluation}/{score_text}")
 def get_badge(scoring_model, user_name, evaluation, score_text):
     info = get_info(scoring_model, user_name, evaluation, score_text)
+    if info == "A badge with a score of 0 cannot be displayed":
+        return
     score, color = str(info[0]), str(info[1])
     text = "{}-{}{}".format(website[scoring_model], website[score_text], website[evaluation])
     badge = pybadges.badge(left_text=text, right_text=score, right_color=color)
