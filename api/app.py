@@ -80,7 +80,7 @@ website = {
 def get_info(scoring_model, user_name, evaluation, score_text):
     
     if scoring_model == "clubdam-dx-g":
-        url = "https://seimitsu-kensaku.herokuapp.com/api/v1/{}/counts".format(user_name)
+        url = "https://seimitsukensaku-app.onrender.com/api/v1/{}/counts".format(user_name)
     req_get = requests.get(url)
     if req_get.status_code != 200:
         return "Wrong platform website name"
