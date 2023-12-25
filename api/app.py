@@ -83,11 +83,15 @@ def get_info(scoring_model, user_name, evaluation, score_text):
         url = "https://seimitsukensaku-app.onrender.com/api/v1/{}/counts".format(user_name)
     req_get = requests.get(url)
     if req_get.status_code != 200:
-        return "Wrong platform website name"
+        print("Wrong platform website name")
+        return [0, "#000000"]
     score = req_get.json()["result"][evaluation][score_text]
     color = get_color[score_text]
+    print(req_get.json()["result"][evaluation])
+    print(score, color)
     if score < 1:
-        return "A badge with a score of 0 cannot be displayed"
+        print("A badge with a score of 0 cannot be displayed")
+        return [0, "#000000"]
     return [score, color]
 
 
